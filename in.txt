@@ -1,0 +1,23 @@
+create table student (
+	f0a int PRIMARY KEY,
+	g0 varchar(20),
+	h0 int,
+	i0 varchar(13),
+	j0 int,
+	k0 int,
+	l0 int,
+	m0 int,
+	n0 int,
+	o0 int,
+	p0 int,
+	q0 int,
+	r0 int,
+	s int,
+	t0 int,
+	u0 int,
+	v0 int,
+	w0 int,
+	x0 int,
+	y0 int,
+	z0 int
+);
