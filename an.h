@@ -1,11 +1,15 @@
+struct Grid
+{
+	int type;  // 0 -> int 1 -> varchar
+	int integer;
+	char string[50];
+};
 struct tuple
 {
 	int attribute_num;
 	int is_null[20];
-	int int_attribute[20];
-	char str_attribute[20][20];
-	int attribute_type[20];
 	int PK;
+	struct Grid grid[20];
 	struct tuple *next;
 };
 struct Table
