@@ -1,41 +1,40 @@
 
-CREATE	TABLE	student (
+CREATE	TABLE	student1 (
 
 	f0a int PRIMARY KEY ,
 ,
-	g0 varchar( 20 ) 
+	g0 varchar( 20 ) ,
+	e0 int 
 
 );
 
-CREATE	TABLE	student 
-CREATE	TABLE	student1 (
+CREATE	TABLE	student2 (
 
-	f0a int ,
-	g0 
-INSERT	INTO	student ( f0a , g0 )
-VALUES ( 1234 , 'JOHN CENA' ) ;
+	f0a int PRIMARY KEY ;
 
-
-INSERT	INTO	student ( f0a , g0 )
-VALUES ( 1234 
-INSERT	INTO	student ( f0a , g0 )
-VALUES ( 2147483647 , 'JOHN CENA' ) ;
+INSERT	INTO	student1 ( g0 )
+VALUES ( 'ewrqwerqwerwqerwerwqerew' 
+INSERT	INTO	student1 ( g0 )
+VALUES ( 8888 
+INSERT	INTO	student2 student2 ( f0a )
+VALUES ( 1234 ) ;
 
 
-INSERT	INTO	student ( f0a , g0 )
-VALUES ( -2147483648 
-INSERT	INTO	student ( f0a , g0 )
-VALUES ( -2 
-INSERT	INTO	student ( f0a , g0 )
-VALUES ( -2147483648 , 'JOHN CENA' ) ;
+INSERT	INTO	student2 student2 VALUES ( 4321 ) ;
 
 
-INSERT	INTO	student ( f0a , g0 )
-VALUES ( 2147483647 
-INSERT	INTO	student ( f0a , g0 )
-VALUES ( -9 
-INSERT	INTO	student ( f0a , g0 )
-VALUES ( , 
-INSERT	INTO	student ( g0 )
-VALUES ( 'JOHN CENA' ) ;
+INSERT	INTO	student1 ( e0 )
+VALUES ( 1234 ) ;
 
+
+INSERT	INTO	student1 ( e0 , f0a )
+VALUES ( 1234 , 4321 ) ;
+
+
+INSERT	INTO	student1 ( e0 , f0a )
+VALUES ( 1234 , 4321 
+INSERT	INTO	student1 ( e0 , f0a , e0 
+INSERT	INTO	student1 ( e0 , f0a , g0 , 
+INSERT	INTO	student1 ( e0 , 
+INSERT	INTO	student1 ( f0a )
+VALUES ( 1234 , 

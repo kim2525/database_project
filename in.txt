@@ -1,6 +1,30 @@
-create table student (
-	f0a int,
-	g0 varchar(20)
+create table student1 (
+	f0a int PRIMARY KEY,
+	g0 varchar(20),
+	e0 int
 );
-INSERT INTO StUDeNt (f0a, g0)
-VALUES (1234, 'JOHN CENA');
+create table student2 (
+	f0a int PRIMARY KEY
+);
+INSERT INTO StUDeNt1 (g0)
+VALUES ('ewrqwerqwerwqerwerwqerew');
+INSERT INTO StUDeNt1 (g0)
+VALUES (8888);
+INSERT INTO StUDeNt2 (f0a)
+VALUES (1234);
+INSERT INTO StUDeNt2
+VALUES (4321);
+INSERT INTO StUDeNt1 (e0)
+VALUES (1234);
+INSERT INTO StUDeNt1 (e0,f0a)
+VALUES (1234,4321    );
+INSERT INTO StUDeNt1 (e0,f0a)
+VALUES (1234,4321,'aaa');
+INSERT INTO StUDeNt1 (e0,f0a,e0)
+VALUES (1234,4321,'aaa');
+INSERT INTO StUDeNt1 (e0,f0a,g0,e0)
+VALUES (1234,4321,'aaa');
+INSERT INTO StUDeNt1 (e0,)
+VALUES (1234,4321,'aaa');
+INSERT INTO StUDeNt1 (f0a)
+VALUES (1234,'aaa',4321);
