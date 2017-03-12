@@ -1,0 +1,41 @@
+
+CREATE	TABLE	student (
+
+	f0a int PRIMARY KEY ,
+,
+	g0 varchar( 20 ) 
+
+);
+
+CREATE	TABLE	student 
+CREATE	TABLE	student1 (
+
+	f0a int ,
+	g0 
+INSERT	INTO	student ( f0a , g0 )
+VALUES ( 1234 , 'JOHN CENA' ) ;
+
+
+INSERT	INTO	student ( f0a , g0 )
+VALUES ( 1234 
+INSERT	INTO	student ( f0a , g0 )
+VALUES ( 2147483647 , 'JOHN CENA' ) ;
+
+
+INSERT	INTO	student ( f0a , g0 )
+VALUES ( -2147483648 
+INSERT	INTO	student ( f0a , g0 )
+VALUES ( -2 
+INSERT	INTO	student ( f0a , g0 )
+VALUES ( -2147483648 , 'JOHN CENA' ) ;
+
+
+INSERT	INTO	student ( f0a , g0 )
+VALUES ( 2147483647 
+INSERT	INTO	student ( f0a , g0 )
+VALUES ( -9 
+INSERT	INTO	student ( f0a , g0 )
+VALUES ( , 
+INSERT	INTO	student ( g0 )
+VALUES ( 'JOHN CENA' ) ;
+
