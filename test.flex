@@ -104,7 +104,7 @@ void create(int *TBN)
 				fprintf( paser_generator , "	%s ", tstr);
 				for(i=0;i<num;i++)// check repeat attribute name
 				{
-					if(strcmp(str[num],tstr) == 0)
+					if(strcmp(str[i],tstr) == 0)
 					{	printf("There has a same attribute\n"); error_eater(); return; }
 				}
 				strcpy(str[num],tstr);
@@ -173,6 +173,7 @@ void create(int *TBN)
 						{
 							
 							fprintf( paser_generator , ";\n");
+							PK = num - 1;
 							break;
 						}
 						else    // not sure what to do when there is not a semicolon in the end
@@ -212,7 +213,7 @@ void create(int *TBN)
 void insert(int *TBN)
 {
 	int i, table_number = -1, index[10], now, j, flag, count, loopFlag = 0;
-	struct tuple *input, *temp, *temp2, *PkCheck;
+	struct tuple *input, *temp, *PkCheck;
 	input = (struct tuple*)malloc(sizeof(struct tuple));
 	
 	for(i=0; i<10; i++) index[i] = -1;
@@ -326,12 +327,15 @@ void insert(int *TBN)
 								{ printf("iNTERGER is out of bound \n"); error_eater(); return; } // check the integer boundary
 								if(input->grid[nowp].type == 0) //type match
 								{
-									PkCheck = tables[table_number].tuple_address;
-									while(PkCheck != NULL)
+									if(input->PK != -1 && input->PK == nowp)
 									{
-										if(input->PK != -1 &&PkCheck ->grid[input->PK].integer == tkval)
-										{	printf("PRIMARY KEY repeat \n"); error_eater(); return;}
-									    PkCheck = PkCheck ->next;
+										PkCheck = tables[table_number].tuple_address;
+										while(PkCheck != NULL)
+										{
+											if(PkCheck ->grid[input->PK].integer == tkval)
+											{	printf("PRIMARY KEY repeat \n"); error_eater(); return;}
+											PkCheck = PkCheck ->next;
+										}
 									}
 									input->grid[nowp].integer = tkval;
 									input->is_null[nowp] = 0;
@@ -343,19 +347,22 @@ void insert(int *TBN)
 								if(input->grid[nowp].type == 1) //type match
 								{
 									fprintf( paser_generator , "%s ", tstr);
-									int length = strlen(tstr);
+									int length = strlen(tstr)-2;
 									if(length > tables[table_number].attribute_length[nowp]) {printf("String length too long\n"); error_eater(); return;}
-									for(i=0; i<length-2; i++)
+									input->is_null[nowp] = 0;
+									for(i=0; i<length; i++)
 									{
 										input->grid[nowp].string[i] = tstr[i+1];
-										input->is_null[nowp] = 0;
 									}
-									PkCheck = tables[table_number].tuple_address;
-									while(PkCheck != NULL)
+									if(input->PK != -1 && input->PK == nowp)
 									{
-										if(input->PK != -1 &&strcmp(PkCheck ->grid[input->PK].string, tstr) == 0)
-										{	printf("PRIMARY KEY repeat \n"); error_eater(); return;}
-									    PkCheck = PkCheck ->next;
+										PkCheck = tables[table_number].tuple_address;
+										while(PkCheck != NULL)
+										{
+											if(strcmp(PkCheck ->grid[input->PK].string, input->grid[nowp].string) == 0)
+											{	printf("PRIMARY KEY repeat \n"); error_eater(); return;}
+											PkCheck = PkCheck ->next;
+										}
 									}
 								}
 								else {printf("Attribute type should be int\n"); error_eater(); return;}
@@ -364,6 +371,7 @@ void insert(int *TBN)
 							{
 								fprintf( paser_generator , ", ");
 								if(input->PK != -1 && input->PK == nowp) { printf("PRIMARY KEY attribute can't be NULL\n"); error_eater(); return;}	
+								now++;
 								continue; // insert value is null
 							}
 							else if(tok == RIGHTPA)
@@ -394,8 +402,8 @@ void insert(int *TBN)
 								if(tok == SEMICOLON || tok == 0) 
 								{
 									
-									if(now!=count && loopFlag == 1){ printf("now != count\n"); error_eater(); return;}
-									if(now > tables[table_number].attribute_num && loopFlag == 0){ printf("now > attribute_num\n"); error_eater(); return;}
+									if(now!=count && loopFlag == 1){ printf("now != count\n"); return;}
+									if(now > tables[table_number].attribute_num && loopFlag == 0){ printf("now > attribute_num\n"); return;}
 									fprintf( paser_generator , ";\n\n");
 									if(input->PK != -1 && input->is_null[input->PK] == 1) { printf("PRIMARY KEY attribute can't be NULL\n"); return;}
 									break;
@@ -415,17 +423,43 @@ void insert(int *TBN)
 							}
 							else if(tok == COMMA) {fprintf( paser_generator , ", ");}
 						}
-						if(tables[table_number].tuple_address == NULL)
-						{
-							tables[table_number].tuple_address = input;
-						}
-						else
+						
+						if(input->PK == -1)
 						{
 							temp = tables[table_number].tuple_address;
-							temp2 = temp->next;
-							temp->next = input;
-							input->next = temp2;
+							flag = 0;
+							
+							while(temp != NULL)
+							{
+								for(i=0; i<temp->attribute_num; i++)
+								{
+									if(temp->is_null[i] != input->is_null[i]) break;
+									else
+									{
+										if(temp->grid[i].type == 0) //int
+										{
+											if(temp->grid[i].integer != input->grid[i].integer) break;
+										}
+										else //varchar
+										{
+											if(strcmp(temp->grid[i].string, input->grid[i].string) != 0) break;
+										}
+									}
+								}
+								
+								if(i == temp->attribute_num)
+								{
+									flag = 1;
+									break;
+								}
+								temp = temp->next;
+							}
+							
+							if(flag == 1) {printf("Repeat tuple (No primary key)\n"); return;}
 						}
+						input->next = tables[table_number].tuple_address;
+						tables[table_number].tuple_address = input;
+						
 						printf("%10d\n",input->attribute_num);
 						for(int i = 0; i < input->attribute_num; i++)
 						{
@@ -498,7 +532,7 @@ void main(int argc, char **argv)
 				else
 				{
 					if(j->grid[k].type == 0) fprintf(output,"%10d",j->grid[k].integer);
-					else fprintf(output,"%10s",j->grid[k].integer);
+					else fprintf(output,"%10s",j->grid[k].string);
 				}
 				
 			}fprintf(output,"\n\n");
