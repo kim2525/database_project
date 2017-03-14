@@ -5,10 +5,10 @@ PRIMARY KEY PLACE: 0
       4321      NULL      1234
 
 table name: student2
-PRIMARY KEY PLACE: -1
+PRIMARY KEY PLACE: 0
        f0a
 ----------------------------------------------------------------------------------------------------
-      1234
-
       4321
+
+      1234
 

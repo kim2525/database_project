@@ -434,7 +434,7 @@ int tkval;
 char tstr[100]; //if it is a name, store the name
 char tkval_s[100];
 struct Table tables[30]; 
-FILE *paser_generator, *output;
+FILE *paser_generator, *output, *error_Mess;
 #line 439 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
@@ -1688,7 +1688,7 @@ void create(int *TBN)
 	{
 		int len0 = strlen(tstr);
 		if(strcmp(tables[i].TBname, tstr) == 0)
-		{	printf("There has a same Table name\n"); error_eater(); return; }
+		{	printf("There has a same Table name\n"); fprintf(error_Mess,"Error : Repeat TABLE NAME when creating TABLE\n"); error_eater(); return; }
 	}
 	tok = yylex();
 	if(tok == LEFTPA) // (
@@ -1699,18 +1699,18 @@ void create(int *TBN)
 			tok = yylex();
 			if(tok == NAME)//ATTRITUBE
 			{
-				if(num >= 10) {printf("Each table up to 10 attribute\n"); error_eater(); return;} // Each table up to 10 attribute
+				if(num >= 10) {printf("Each table up to 10 attribute\n"); fprintf(error_Mess,"Error : Each TABLE up to 10 attributes during CREATE\n"); error_eater(); return;} // Each table up to 10 attribute
 				len0 = strlen(tstr);
 				for(i=0; i<len0; i++) tstr[i] = (char)tolower(tstr[i]);
 				fprintf( paser_generator , "	%s ", tstr);
 				for(i=0;i<num;i++)// check repeat attribute name
 				{
-					if(strcmp(str[num],tstr) == 0)
-					{	printf("There has a same attribute\n"); error_eater(); return; }
+					if(strcmp(str[i],tstr) == 0)
+					{	printf("There has a same attribute\n"); fprintf(error_Mess,"Error : Repeat attribute when creating TABLE\n");error_eater(); return; }
 				}
 				strcpy(str[num],tstr);
 			}
-			else {printf("u r wrong NAME\n"); error_eater(); return;} // the things may not be a attribute name
+			else {printf("u r wrong NAME\n"); fprintf(error_Mess,"Error : Wrong attribute name during CREATE \n"); error_eater(); return;} // the things may not be a attribute name
 			tok = yylex();
 			
 			if(tok == integer) { fprintf( paser_generator , "int "); type[num] = 0; } //int case
@@ -1727,7 +1727,7 @@ void create(int *TBN)
 					if(tok == INT) // tkval 
 					{
 						int tkval_length = strlen(tkval_s);
-						if(tkval_length > 2 || tkval > 40 ) { printf("The num in varchar() is wrong \n"); error_eater(); return; } // check tkval > 40
+						if(tkval_length > 2 || tkval > 40 ) { printf("The num in varchar() is wrong \n"); fprintf(error_Mess,"Error : INT in varchar out of range\n"); error_eater(); return; } // check tkval > 40
 						fprintf( paser_generator , "%d ", tkval);
 						tok = yylex();
 						if(tok == RIGHTPA) 
@@ -1737,10 +1737,10 @@ void create(int *TBN)
 					else flag = 2;
 				}
 				else flag = 1;	//if is in wrong format
-				if(flag == 1) {printf("Unknown type\n"); error_eater(); return;}
-				else if(flag == 2) {printf("Wrong SQL syntax\n"); error_eater(); return;}
+				if(flag == 1) {printf("Unknown type\n"); fprintf(error_Mess,"Error : Wrong SQL syntax after \"varchar(num\" , should be ')'\n"); error_eater(); return;}
+				else if(flag == 2) {printf("Wrong SQL syntax\n"); fprintf(error_Mess,"Error : Unknown type, should be INT in varchar()\n"); error_eater(); return;}
 			}
-			else {printf("Unknown keywords\n"); error_eater(); return;}
+			else {printf("Unknown keywords\n"); fprintf(error_Mess,"Error : Unknown attribute type, should be \"integer\" or \"varchar\"\n"); error_eater(); return;}
 			num++;
 			tok = yylex();
 			if(tok == RIGHTPA) // )
@@ -1755,6 +1755,7 @@ void create(int *TBN)
 				else    // not sure what to do when there is not a semicolon in the end
 				{
 					printf("expected a semicolon\n"); 
+					fprintf(error_Mess,"Error : Wrong SQL syntax after ')' during the end of CREATE, should be ';' (1.)\n");
 					error_eater();
 					return;
 				}
@@ -1774,35 +1775,42 @@ void create(int *TBN)
 						{
 							
 							fprintf( paser_generator , ";\n");
+							PK = num - 1;
 							break;
 						}
 						else    // not sure what to do when there is not a semicolon in the end
 						{
 							printf("expected a semicolon\n");
+							fprintf(error_Mess,"Error : Wrong SQL syntax after ')' during the end of CREATE, should be ';' (2.)\n");
 							error_eater();
 							return;
 						}
 					}
-					else {printf("Wrong SQL syntax\n"); error_eater(); return;}
+					else {printf("Wrong SQL syntax\n"); fprintf(error_Mess,"Error : Wrong SQL syntax after PRIMARY KEY,should be ',' or ')' \n"); error_eater(); return;}
 				}
-				else {printf("Unknown keywords\n"); error_eater(); return;}
+				else {printf("Unknown keywords\n"); fprintf(error_Mess,"Error : Unknown keyword, should be \"KEY\"\n"); error_eater(); return;}
 			}
-			else if(tok != COMMA) {printf("Wrong SQL syntax\n"); error_eater(); return;}
+			else if(tok != COMMA) {printf("Wrong SQL syntax\n"); fprintf(error_Mess,"Error : Wrong SQL syntax after 'integer' or 'varchar()', should be ',' \n"); error_eater(); return;}
 			fprintf( paser_generator , ",\n");
 		}
 	}//LEFTPA
-	else {printf("Wrong SQL syntax\n"); error_eater(); return;}
+	else {printf("Wrong SQL syntax\n"); fprintf(error_Mess,"Error : Wrong SQL syntax after \"TABLE NAME\" , should be '('\n"); error_eater(); return;}
 	}//NAME
-	else {printf("Unknown keywords\n"); error_eater(); return;}
+	else {printf("Unknown keywords\n"); fprintf(error_Mess,"Error : Unknown keyword, should be \"TABLE NAME\"\n"); error_eater(); return;}
 	}//TABLE
-	else {printf("Unknown keywords\n"); error_eater(); return;}
+	else {printf("Unknown keywords\n"); fprintf(error_Mess,"Error : Unknown keyword, should be \"TABLE\"\n"); error_eater(); return;}
 	strcpy(tables[*TBN].TBname, TBname);
 	tables[*TBN].PK = PK;
+	printf("table name %s\n",tables[*TBN].TBname);
+	printf("PRIMARY KEY AT %d\n",tables[*TBN].PK);
 	for(i = 0; i < num; i++)
 	{
 		strcpy(tables[*TBN].attribute_name[i] ,str[i]);
 		tables[*TBN].attribute_type[i] = type[i];
 		tables[*TBN].attribute_length[i] = length[i];
+		printf("%s ",tables[*TBN].attribute_name[i]);
+		if(tables[*TBN].attribute_type[i] == 0) printf("int\n\n");
+		else printf("varchar(%d)\n\n",tables[*TBN].attribute_length[i]);
 	}
 	tables[*TBN].attribute_num = num;
 	tables[*TBN].tuple_address = NULL;
@@ -1813,7 +1821,7 @@ void create(int *TBN)
 void insert(int *TBN)
 {
 	int i, table_number = -1, index[10], now, j, flag, count, loopFlag = 0;
-	struct tuple *input, *temp, *temp2, *PkCheck;
+	struct tuple *input, *temp, *PkCheck;
 	input = (struct tuple*)malloc(sizeof(struct tuple));
 	
 	for(i=0; i<10; i++) index[i] = -1;
@@ -1861,7 +1869,7 @@ void insert(int *TBN)
 						tok = yylex();
 						if(tok == NAME)
 						{
-							if(now >= tables[table_number].attribute_num){printf("Too many attribute during INSERT\n"); error_eater(); return;}// now >= attribute_num
+							if(now >= tables[table_number].attribute_num){printf("Too many attribute during INSERT\n"); fprintf(error_Mess,"Error : Each TABLE up to 10 attributes during INSERT\n"); error_eater(); return;}// now >= attribute_num
 							flag = 0;
 							for(i=0; i<tables[table_number].attribute_num; i++)
 							{
@@ -1875,9 +1883,9 @@ void insert(int *TBN)
 								}
 							}
 							fprintf( paser_generator , "%s ",tstr);
-							if(flag == 0) {printf("NO such Attribute name\n"); error_eater(); return;}
+							if(flag == 0) {printf("NO such Attribute name\n"); fprintf(error_Mess,"Error : NO such attribute name during INSERT \n"); error_eater(); return;}
 						}
-						else {printf("Wrong Attribute name\n"); error_eater(); return;}
+						else {printf("Wrong Attribute name\n"); fprintf(error_Mess,"Error : Wrong attribute name during INSERT \n"); error_eater(); return;}
 						tok = yylex();
 						count = ++now;
 						if(tok == RIGHTPA)
@@ -1888,7 +1896,7 @@ void insert(int *TBN)
 								{
 									if(index[i] == index[j])
 									{
-										{printf("Repeat attribute name during INSERT\n"); error_eater(); return;}
+										{printf("Repeat attribute name during INSERT\n"); fprintf(error_Mess,"Error : Repeat attribute name during INSERT \n"); error_eater(); return;}
 									}
 								}
 							}
@@ -1899,6 +1907,7 @@ void insert(int *TBN)
 						else if(tok != COMMA)
 						{
 							printf("Wrong syntax\n");
+							fprintf(error_Mess,"Error : Wrong SQL syntax after attribute during INSERT , should be ',' or ')' (1.)\n");
 							error_eater();
 							return;
 						}
@@ -1916,7 +1925,7 @@ void insert(int *TBN)
 						now = 0;
 						while(1)
 						{
-							if(now >= count &&loopFlag == 1) {printf("Too many value\n"); error_eater();return;}
+							if(now >= count &&loopFlag == 1) {printf("Too many value\n"); fprintf(error_Mess,"Error : Too many value during INSERT, num_value should equal to num_attr during INSERT\n"); error_eater();return;}
 							tok = yylex();
 							nowp = index[now];
 							if(tok == INT)
@@ -1924,47 +1933,54 @@ void insert(int *TBN)
 								int tkval_length = strlen(tkval_s);
 								fprintf( paser_generator , "%d ", tkval);
 								if((tkval_s[0] != '-'&& tkval_length > 10) || (tkval_s[0] == '-'&& tkval_length > 11) || (tkval_s[0] != '-' && tkval_length == 10 && tkval <= 0) || (tkval_s[0] == '-' && tkval_length == 11 && tkval >= 0) ) 
-								{ printf("iNTERGER is out of bound \n"); error_eater(); return; } // check the integer boundary
+								{ printf("INTERGER is out of bound \n"); fprintf(error_Mess,"Error : INTERGER is out of bound during INSERT\n"); error_eater(); return; } // check the integer boundary
 								if(input->grid[nowp].type == 0) //type match
 								{
-									PkCheck = tables[table_number].tuple_address;
-									while(PkCheck != NULL)
+									if(input->PK != -1 && input->PK == nowp)
 									{
-										if(input->PK != -1 &&PkCheck ->grid[input->PK].integer == tkval)
-										{	printf("PRIMARY KEY repeat \n"); error_eater(); return;}
-									    PkCheck = PkCheck ->next;
+										PkCheck = tables[table_number].tuple_address;
+										while(PkCheck != NULL)
+										{
+											if(PkCheck ->grid[input->PK].integer == tkval)
+											{	printf("PRIMARY KEY repeat \n"); fprintf(error_Mess,"Error : INT type PRIMARY KEY repeat during INSERT\n"); error_eater(); return;}
+											PkCheck = PkCheck ->next;
+										}
 									}
 									input->grid[nowp].integer = tkval;
 									input->is_null[nowp] = 0;
 								}
-								else {printf("Attribute type should be varchar\n"); error_eater(); return;}
+								else {printf("Attribute type should be varchar\n"); fprintf(error_Mess,"Error : Attribute type should be VARCHAR\n"); error_eater(); return;}
 							}
 							else if(tok == STRING)
 							{
 								if(input->grid[nowp].type == 1) //type match
 								{
 									fprintf( paser_generator , "%s ", tstr);
-									int length = strlen(tstr);
-									if(length > tables[table_number].attribute_length[nowp]) {printf("String length too long\n"); error_eater(); return;}
-									for(i=0; i<length-2; i++)
+									int length = strlen(tstr)-2;
+									if(length > tables[table_number].attribute_length[nowp]) {printf("String length too long\n"); fprintf(error_Mess,"Error : String length too long during INSERT\n");error_eater(); return;}
+									input->is_null[nowp] = 0;
+									for(i=0; i<length; i++)
 									{
 										input->grid[nowp].string[i] = tstr[i+1];
-										input->is_null[nowp] = 0;
 									}
-									PkCheck = tables[table_number].tuple_address;
-									while(PkCheck != NULL)
+									if(input->PK != -1 && input->PK == nowp)
 									{
-										if(input->PK != -1 &&strcmp(PkCheck ->grid[input->PK].string, tstr) == 0)
-										{	printf("PRIMARY KEY repeat \n"); error_eater(); return;}
-									    PkCheck = PkCheck ->next;
+										PkCheck = tables[table_number].tuple_address;
+										while(PkCheck != NULL)
+										{
+											if(strcmp(PkCheck ->grid[input->PK].string, input->grid[nowp].string) == 0)
+											{	printf("PRIMARY KEY repeat \n"); fprintf(error_Mess,"Error : VARCHAR type PRIMARY KEY repeat during INSERT\n"); error_eater(); return;}
+											PkCheck = PkCheck ->next;
+										}
 									}
 								}
-								else {printf("Attribute type should be int\n"); error_eater(); return;}
+								else {printf("Attribute type should be int\n"); fprintf(error_Mess,"Error : Attribute type should be INT\n"); error_eater(); return;}
 							}
 							else if(tok == COMMA)
 							{
 								fprintf( paser_generator , ", ");
-								if(input->PK != -1 && input->PK == nowp) { printf("PRIMARY KEY attribute can't be NULL\n"); error_eater(); return;}	
+								if(input->PK != -1 && input->PK == nowp) { printf("PRIMARY KEY attribute can't be NULL\n"); fprintf(error_Mess,"Error : PRIMARY KEY attribute can't be NULL during INSERT(1.)\n"); error_eater(); return;}	
+								now++;
 								continue; // insert value is null
 							}
 							else if(tok == RIGHTPA)
@@ -1975,17 +1991,18 @@ void insert(int *TBN)
 								if(tok == SEMICOLON || tok == 0) 
 								{
 									fprintf( paser_generator , ";\n\n");
-									if(input->PK != -1 &&input->is_null[input->PK] == 1) { printf("PRIMARY KEY attribute can't be NULL\n"); return;}
+									if(input->PK != -1 &&input->is_null[input->PK] == 1) { printf("PRIMARY KEY attribute can't be NULL\n"); fprintf(error_Mess,"Error : PRIMARY KEY attribute can't be NULL during INSERT(2.)\n");return;}
 									break;
 								}
 								else
 								{
 									printf("expected a semicolon\n"); 
+									fprintf(error_Mess,"Error : Wrong SQL syntax after ')' during the end of INSERT, should be ';' (1.)\n");
 									error_eater();
 									return;
 								}
 							}
-							else {printf("Attribute value should be int or varchar or null\n"); error_eater(); return;}
+							else {printf("Attribute value should be int or varchar or null\n"); fprintf(error_Mess,"Error : There should have somethings after \"VALUES ( \", ex. Attribute value should be int or varchar or null\n"); error_eater(); return;}
 							now++;
 							tok = yylex();
 							if(tok == RIGHTPA)
@@ -1995,15 +2012,16 @@ void insert(int *TBN)
 								if(tok == SEMICOLON || tok == 0) 
 								{
 									
-									if(now!=count && loopFlag == 1){ printf("now != count\n"); error_eater(); return;}
-									if(now > tables[table_number].attribute_num && loopFlag == 0){ printf("now > attribute_num\n"); error_eater(); return;}
+									if(now!=count && loopFlag == 1){ printf("now != count\n"); fprintf(error_Mess,"Error : num_vale should equal to num_attr during INSERT\n"); return;}
+									if(now > tables[table_number].attribute_num && loopFlag == 0){ printf("now > attribute_num\n"); fprintf(error_Mess,"Error : num_vale should less or equal to TABLE_num_attr during INSERT\n");return;}
 									fprintf( paser_generator , ";\n\n");
-									if(input->PK != -1 && input->is_null[input->PK] == 1) { printf("PRIMARY KEY attribute can't be NULL\n"); return;}
+									if(input->PK != -1 && input->is_null[input->PK] == 1) { printf("PRIMARY KEY attribute can't be NULL\n"); fprintf(error_Mess,"Error : PRIMARY KEY attribute can't be NULL during INSERT(3.)\n"); return;}
 									break;
 								}
 								else
 								{
 									printf("expected a semicolon\n"); 
+									fprintf(error_Mess,"Error : Wrong SQL syntax after ')' during the end of INSERT, should be ';' (2.)\n");
 									error_eater();
 									return;
 								}
@@ -2011,39 +2029,67 @@ void insert(int *TBN)
 							else if(tok != COMMA)
 							{
 								printf("Wrong syntax\n");
+								fprintf(error_Mess,"Error : Wrong SQL syntax after attribute during INSERT , should be ',' or ')' (2.)\n");
 								error_eater();
 								return;
 							}
 							else if(tok == COMMA) {fprintf( paser_generator , ", ");}
 						}
-						if(tables[table_number].tuple_address == NULL)
-						{
-							tables[table_number].tuple_address = input;
-						}
-						else
+						
+						if(input->PK == -1)
 						{
 							temp = tables[table_number].tuple_address;
-							temp2 = temp->next;
-							temp->next = input;
-							input->next = temp2;
+							flag = 0;
+							
+							while(temp != NULL)
+							{
+								for(i=0; i<temp->attribute_num; i++)
+								{
+									if(temp->is_null[i] != input->is_null[i]) break;
+									else
+									{
+										if(temp->grid[i].type == 0) //int
+										{
+											if(temp->grid[i].integer != input->grid[i].integer) break;
+										}
+										else //varchar
+										{
+											if(strcmp(temp->grid[i].string, input->grid[i].string) != 0) break;
+										}
+									}
+								}
+								
+								if(i == temp->attribute_num)
+								{
+									flag = 1;
+									break;
+								}
+								temp = temp->next;
+							}
+							
+							if(flag == 1) {printf("Repeat tuple (No primary key)\n"); fprintf(error_Mess,"Error : Repeat tuple (No primary key)\n");return;}
 						}
-						printf("%10d\n",input->attribute_num);
+						input->next = tables[table_number].tuple_address;
+						tables[table_number].tuple_address = input;
+						
+						printf("attribute_num:%10d\n",input->attribute_num);
 						for(int i = 0; i < input->attribute_num; i++)
 						{
-							if(input->is_null[i] == 1) printf("NULL\n");
+							printf("%10s  ",tables[table_number].attribute_name[i]);
+							if(input->is_null[i] == 1) printf("      NULL\n");
 							else if(input->grid[i].type == 0) printf("%10d\n",input->grid[i].integer);
 							else printf("%10s\n",input->grid[i].string);
 						}
 					}
-					else {printf("Syntax error\n"); error_eater(); return;}
+					else {printf("Syntax error\n"); fprintf(error_Mess,"Error : Wrong SQL syntax after VALUES during INSERT, should be '('\n");error_eater(); return;}
 				}
-				else {printf("Syntax error\n"); error_eater(); return;}
+				else {printf("Syntax error\n"); fprintf(error_Mess,"Error : Wrong SQL syntax after INTO TABLE NAME, should be '(' or \"VLAUES\" \n"); error_eater(); return;}
 			}
-			else {printf("There is no this Table name\n"); error_eater(); return;}
+			else {printf("There is no this Table name\n"); fprintf(error_Mess,"Error : Unknown TABLE NAME after INTO\n"); error_eater(); return;}
 		}
-		else {printf("Wrong Table name\n"); error_eater(); return;}
+		else {printf("Wrong Table name\n"); fprintf(error_Mess,"Error : Unknown keyword, should be \"TABLE NAME\"\n"); error_eater(); return;}
 	}
-	else {printf("Syntax error, it should be INSERT INTO\n"); error_eater(); return;}
+	else {printf("Syntax error, it should be INSERT INTO\n"); fprintf(error_Mess,"Error : Unknown keyword, should be \"INTO\"\n"); error_eater(); return;}
 }
 
 void main(int argc, char **argv)
@@ -2052,10 +2098,12 @@ void main(int argc, char **argv)
 	int TBN = 0; //table numbers
 	int flag;
 	paser_generator = fopen("paser_generator.txt","w"); //Print out paser reselt to check the paser is correst or no fprintf( paser_generator , "%s", tok);
+	error_Mess = fopen("Error_Message.txt","w");
 	output = fopen("output.txt","w");
 	while(1)
 	{
 		printf("cycle: %d\n",cycle++);
+		fprintf(error_Mess,"\n\ncycle : %d \n\n=====================================================\n\n",cycle);
 		tok = yylex();
 		if(tok == CREATE)
 		{ 
@@ -2079,7 +2127,8 @@ void main(int argc, char **argv)
 		else if(tok == 0) break;
 		else
 		{
-			printf("unknown keyword\n");
+			printf("unknown keyword\n"); 
+			fprintf(error_Mess,"Error : Unknown keyword\n");
 			error_eater();
 		}
 	}
@@ -2099,7 +2148,7 @@ void main(int argc, char **argv)
 				else
 				{
 					if(j->grid[k].type == 0) fprintf(output,"%10d",j->grid[k].integer);
-					else fprintf(output,"%10s",j->grid[k].integer);
+					else fprintf(output,"%10s",j->grid[k].string);
 				}
 				
 			}fprintf(output,"\n\n");
@@ -2107,5 +2156,6 @@ void main(int argc, char **argv)
 	}
 	fclose(output);
 	fclose(paser_generator);
+	fclose(error_Mess);
 	return ;
 }
