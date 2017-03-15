@@ -1,14 +1,25 @@
-table name: student1
+table name: comment
 PRIMARY KEY PLACE: 0
-       f0a        g0        e0
+ commented    author   content articleld
 ----------------------------------------------------------------------------------------------------
-      4321      NULL      1234
 
-table name: student2
+table name: links
 PRIMARY KEY PLACE: 0
-       f0a
+    linkid       url
 ----------------------------------------------------------------------------------------------------
-      4321
+         1http://www.nthu.edu.tw
 
-      1234
+
+table name: article
+PRIMARY KEY PLACE: 0
+ articleid     title    author      view
+----------------------------------------------------------------------------------------------------
+         4     HEllo       SYS         0
+
+         3Cool #Hashtag       Sys        33
+
+         2HEllo Space! Astronaut        33
+
+         1HEllo , qq       SYS        33
+
 

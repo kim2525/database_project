@@ -335,12 +335,12 @@ static yyconst int yy_meta[31] =
 
 static yyconst short int yy_base[63] =
     {   0,
-        0,    0,   80,   81,   29,   31,   74,   81,   81,   81,
-       68,   67,   81,    0,   51,   53,   58,   48,   60,   59,
-       33,   65,   64,   58,    0,   51,   11,   36,   47,   51,
+        0,    0,   79,   80,   29,   31,   73,   80,   80,   80,
+       67,   66,   80,    0,   50,   52,   57,   47,   59,   58,
+       33,   64,   80,   58,    0,   51,   11,   36,   47,   51,
        19,   51,   46,   38,    0,   39,   39,   30,   43,   29,
        30,    0,   42,   37,   36,   34,   34,   22,   23,    0,
-       21,   31,    0,    0,   12,    0,   16,    0,    0,   81,
+       21,   31,    0,    0,   12,    0,   16,    0,    0,   80,
        43,   37
     } ;
 
@@ -348,14 +348,14 @@ static yyconst short int yy_def[63] =
     {   0,
        60,    1,   60,   60,   60,   60,   61,   60,   60,   60,
        60,   60,   60,   62,   62,   62,   62,   62,   62,   62,
-       60,   61,   61,   60,   62,   62,   62,   62,   62,   62,
+       60,   61,   60,   60,   62,   62,   62,   62,   62,   62,
        62,   62,   62,   62,   62,   62,   62,   62,   62,   62,
        62,   62,   62,   62,   62,   62,   62,   62,   62,   62,
        62,   62,   62,   62,   62,   62,   62,   62,   62,    0,
        60,   60
     } ;
 
-static yyconst short int yy_nxt[112] =
+static yyconst short int yy_nxt[111] =
     {   0,
         4,    5,    6,    4,    7,    8,    9,   10,   11,   12,
        13,   14,   14,   15,   14,   14,   14,   16,   17,   14,
@@ -363,16 +363,15 @@ static yyconst short int yy_nxt[112] =
        21,   21,   21,   21,   21,   21,   33,   34,   38,   25,
        59,   58,   57,   39,   22,   22,   56,   55,   54,   53,
        52,   51,   50,   49,   48,   47,   46,   45,   44,   43,
-       42,   41,   40,   37,   36,   35,   32,   24,   23,   23,
-       31,   30,   29,   28,   27,   26,   24,   24,   23,   60,
-        3,   60,   60,   60,   60,   60,   60,   60,   60,   60,
+       42,   41,   40,   37,   36,   35,   32,   24,   23,   31,
+       30,   29,   28,   27,   26,   24,   24,   23,   60,    3,
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
        60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
 
-       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
-       60
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60
     } ;
 
-static yyconst short int yy_chk[112] =
+static yyconst short int yy_chk[111] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -380,13 +379,12 @@ static yyconst short int yy_chk[112] =
         5,    5,    6,    6,   21,   21,   27,   27,   31,   62,
        57,   55,   52,   31,   61,   61,   51,   49,   48,   47,
        46,   45,   44,   43,   41,   40,   39,   38,   37,   36,
-       34,   33,   32,   30,   29,   28,   26,   24,   23,   22,
-       20,   19,   18,   17,   16,   15,   12,   11,    7,    3,
+       34,   33,   32,   30,   29,   28,   26,   24,   22,   20,
+       19,   18,   17,   16,   15,   12,   11,    7,    3,   60,
        60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
        60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
 
-       60,   60,   60,   60,   60,   60,   60,   60,   60,   60,
-       60
+       60,   60,   60,   60,   60,   60,   60,   60,   60,   60
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -435,7 +433,7 @@ char tstr[100]; //if it is a name, store the name
 char tkval_s[100];
 struct Table tables[30]; 
 FILE *paser_generator, *output, *error_Mess;
-#line 439 "lex.yy.c"
+#line 437 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -588,7 +586,7 @@ YY_DECL
 
 #line 35 "test.flex"
 
-#line 592 "lex.yy.c"
+#line 590 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -645,7 +643,7 @@ yy_match:
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 81 );
+		while ( yy_base[yy_current_state] != 80 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -766,7 +764,7 @@ YY_RULE_SETUP
 #line 55 "test.flex"
 ECHO;
 	YY_BREAK
-#line 770 "lex.yy.c"
+#line 768 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1949,7 +1947,7 @@ void insert(int *TBN)
 									input->grid[nowp].integer = tkval;
 									input->is_null[nowp] = 0;
 								}
-								else {printf("Attribute type should be varchar\n"); fprintf(error_Mess,"Error : Attribute type should be VARCHAR\n"); error_eater(); return;}
+								else {printf("Attribute type should be varchar %d %s\n",tok,tstr); fprintf(error_Mess,"Error : Attribute type should be VARCHAR\n"); error_eater(); return;}
 							}
 							else if(tok == STRING)
 							{
@@ -2153,6 +2151,7 @@ void main(int argc, char **argv)
 				
 			}fprintf(output,"\n\n");
 		}
+		fprintf(output,"\n");
 	}
 	fclose(output);
 	fclose(paser_generator);

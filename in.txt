@@ -1,30 +1,38 @@
-create table student1 (
-	f0a int PRIMARY KEY,
-	g0 varchar(20),
-	e0 int
+CREATE TABLE Comment
+	commented int PRIMARY KEY,
+	author varchar(20),
+	content varchar(40),
+	articleld int);
+CREATE TABLE Comment(
+	commented int PRIMARY KEY,
+	author varchar(20),
+	content varchar(40),
+	articleld int);
+CREATE Table Links(
+	linkId int PRIMARY KEY,
+	url text
 );
-create table student2 (
-	f0a int PRIMARY KEY
+CREATE TABLE Links(
+	linkId int PRIMARY KEY,
+	url varchar(40)
 );
-INSERT INTO StUDeNt1 (g0)
-VALUES ('ewrqwerqwerwqerwerwqerew');
-INSERT INTO StUDeNt1 (g0)
-VALUES (8888);
-INSERT INTO StUDeNt2 (f0a)
-VALUES (1234);
-INSERT INTO StUDeNt2
-VALUES (4321);
-INSERT INTO StUDeNt1 (e0)
-VALUES (1234);
-INSERT INTO StUDeNt1 (e0,f0a)
-VALUES (1234,4321    );
-INSERT INTO StUDeNt1 (e0,f0a)
-VALUES (1234,4321,'aaa');
-INSERT INTO StUDeNt1 (e0,f0a,e0)
-VALUES (1234,4321,'aaa');
-INSERT INTO StUDeNt1 (e0,f0a,g0,e0)
-VALUES (1234,4321,'aaa');
-INSERT INTO StUDeNt1 (e0,)
-VALUES (1234,4321,'aaa');
-INSERT INTO StUDeNt1 (f0a)
-VALUES (1234,'aaa',4321);
+CREATE TABLE Article(
+	articleid int PRIMARY KEY,
+	title varchar(20),
+	author	varchar(20),
+	view int
+);
+
+insert into article values(1, 'HEllo , qq','SYS',33);
+insert into article values(2, 'HEllo Space!','Astronaut',33);
+insert into article values(3, 'Cool #Hashtag','Sys',33);
+insert into article values(4, 'HEllo','SYS',0);
+INSERT INTO Article
+VALUES(1,'Last One','Sys',33);
+INSERT INTO Comment
+VALUES(1,'Sys','I can leave a comment!','Hello');
+INSERT INTO Comment
+VALUES(1,'SomeOneReallyHaveALongName','Blahblah',1);
+inSeRt InTO Links
+VALUES(1,'http://www.nthu.edu.tw');
+

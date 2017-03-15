@@ -4,6 +4,7 @@ cycle : 1
 
 =====================================================
 
+Error : Wrong SQL syntax after "TABLE NAME" , should be '('
 
 
 cycle : 2 
@@ -16,14 +17,13 @@ cycle : 3
 
 =====================================================
 
-Error : String length too long during INSERT
+Error : Unknown attribute type, should be "integer" or "varchar"
 
 
 cycle : 4 
 
 =====================================================
 
-Error : Attribute type should be VARCHAR
 
 
 cycle : 5 
@@ -42,7 +42,6 @@ cycle : 7
 
 =====================================================
 
-Error : PRIMARY KEY attribute can't be NULL during INSERT(3.)
 
 
 cycle : 8 
@@ -55,35 +54,33 @@ cycle : 9
 
 =====================================================
 
-Error : INT type PRIMARY KEY repeat during INSERT
 
 
 cycle : 10 
 
 =====================================================
 
-Error : Repeat attribute name during INSERT 
+Error : INT type PRIMARY KEY repeat during INSERT
 
 
 cycle : 11 
 
 =====================================================
 
-Error : Each TABLE up to 10 attributes during INSERT
+Error : Attribute type should be INT
 
 
 cycle : 12 
 
 =====================================================
 
-Error : Wrong attribute name during INSERT 
+Error : String length too long during INSERT
 
 
 cycle : 13 
 
 =====================================================
 
-Error : Too many value during INSERT, num_value should equal to num_attr during INSERT
 
 
 cycle : 14 

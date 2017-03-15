@@ -42,7 +42,7 @@ FILE *paser_generator, *output, *error_Mess;
 [Ii][Nn][Ss][Ee][Rr][Tt] {return INSERT;}
 [Ii][Nn][Tt][Oo] {return INTO;}
 [Vv][Aa][Ll][Uu][Ee][Ss] {return VALUES;}
-\'[ \r\t\f!-~]*\' {strcpy(tstr, yytext); return STRING;}
+\'[ \r\t\f!-&(-~]*\' {strcpy(tstr, yytext); return STRING;}
 \( {return LEFTPA;}
 \) {return RIGHTPA;}
 \, {return COMMA;}
@@ -348,7 +348,7 @@ void insert(int *TBN)
 									input->grid[nowp].integer = tkval;
 									input->is_null[nowp] = 0;
 								}
-								else {printf("Attribute type should be varchar\n"); fprintf(error_Mess,"Error : Attribute type should be VARCHAR\n"); error_eater(); return;}
+								else {printf("Attribute type should be varchar %d %s\n",tok,tstr); fprintf(error_Mess,"Error : Attribute type should be VARCHAR\n"); error_eater(); return;}
 							}
 							else if(tok == STRING)
 							{
@@ -552,6 +552,7 @@ void main(int argc, char **argv)
 				
 			}fprintf(output,"\n\n");
 		}
+		fprintf(output,"\n");
 	}
 	fclose(output);
 	fclose(paser_generator);
