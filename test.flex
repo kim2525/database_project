@@ -21,7 +21,16 @@ enum troken
 	INSERT = 13,
 	INTO = 14,
 	STRING = 15,
-	VALUES = 16
+	VALUES = 16,
+	SELECT = 17,
+	ALL = 18,
+	FROM = 19,
+	AS = 20,
+	GREATER = 21,
+	SMALLER = 22,
+	EQUAL = 23,
+	NOTEQUAL = 24,
+	PSTRING = 25
 };
 int MAX_INT = 2147483647;
 int MIN_INT =  -2147483648;
@@ -33,6 +42,14 @@ struct Table tables[30];
 FILE *paser_generator, *output, *error_Mess;
 %}
 %%
+[Aa][Ss]{return AS;}
+[Ff][Rr][Oo][Mm] {return FROM;}
+[>] {return GREATER;}
+[=] {return EQUAL;}
+[<] {return SMALLER;}
+[<][>] {retunr NOTEQUAL;}
+[A-Za-z][A-Za-z0-9_]*[.][A-Za-z][A-Za-z0-9_] {tstr = yytext;return PSTRING;}
+[*] {return ALL;}
 [Cc][Rr][Ee][Aa][Tt][Ee] {return CREATE;}
 [Tt][Aa][Bb][Ll][Ee] {return TABLE;}
 [Ii][Nn][Tt] {return integer;}
@@ -42,6 +59,7 @@ FILE *paser_generator, *output, *error_Mess;
 [Ii][Nn][Ss][Ee][Rr][Tt] {return INSERT;}
 [Ii][Nn][Tt][Oo] {return INTO;}
 [Vv][Aa][Ll][Uu][Ee][Ss] {return VALUES;}
+[Ss][Ee][Ll][Cc][Tt] { return SELECT;}
 \'[ \r\t\f!-&(-~]*\' {strcpy(tstr, yytext); return STRING;}
 \( {return LEFTPA;}
 \) {return RIGHTPA;}
@@ -509,13 +527,6 @@ void main(int argc, char **argv)
 			fprintf( paser_generator , "\nCREATE	");
 			tok = yylex();
 			create(&TBN);
-			/*printf("table: name%s\n",tables[0].TBname);
-			printf("PRIMARY KEY PLACE: %d\n",tables[0].PK);
-			for(int i = 0; i < tables[0].attribute_num; i++) printf("%10s",tables[0].attribute_name[i]);
-			printf("\n");
-			for(int i = 0; i < tables[0].attribute_num; i++) printf("%10d",tables[0].attribute_type[i]);
-			printf("\n");
-			printf("attribute num: %d\n",tables[0].attribute_num);*/
 		}
 		else if(tok == INSERT)
 		{
